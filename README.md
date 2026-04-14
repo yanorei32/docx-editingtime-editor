@@ -10,6 +10,8 @@
 このソフトウェアを用いれば、あなたも簡単に、✨️素晴らしい総編集時間✨️を
 付与できます。
 
+<img width="486" height="573" alt="image" src="https://github.com/user-attachments/assets/af7a1a71-77be-4f5b-ba00-484fa42e58d7" />
+
 原作: https://x.com/PageMakerAI/status/2043838299299819561
 
 
