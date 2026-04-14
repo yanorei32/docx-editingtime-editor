@@ -39,7 +39,7 @@ fn main() {
             xml.root_element_mut()
                 .first_element_by_name_mut("TotalTime")
                 .unwrap()
-                .set_text(&(cli.time.as_secs() / 60).to_string());
+                .set_text((cli.time.as_secs() / 60).to_string());
 
             xml.to_string().into_bytes()
         } else {
