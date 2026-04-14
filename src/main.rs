@@ -47,7 +47,7 @@ fn main() {
             bin
         };
 
-        output.write(&bin).unwrap();
+        output.write_all(&bin).unwrap();
     }
 
     output.finish().unwrap();
