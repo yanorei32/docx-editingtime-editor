@@ -1,0 +1,111 @@
+on:
+  push:
+    branches:
+      - "master"
+    tags:
+      - "v*"
+
+env:
+  CARGO_INCREMENTAL: 0
+
+jobs:
+  release:
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            file: docx-editingtime-editor
+            output: docx-editingtime-editor-linux.zip
+          - target: x86_64-pc-windows-gnu
+            file: docx-editingtime-editor.exe
+            output: docx-editingtime-editor-windows.zip
+
+    name: release
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
+        run: |
+          sudo apt-get install -y gcc-mingw-w64-x86-64 
+
+      - name: Get Rust toolchain
+        id: toolchain
+        run: |
+          awk -F'[ ="]+' '$1 == "channel" { print "toolchain=" $2 }' rust-toolchain >> "$GITHUB_OUTPUT"
+
+      - name: install clippy
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+          toolchain: ${{ steps.toolchain.outputs.toolchain }}
+          targets: x86_64-pc-windows-gnu
+
+      - uses: actions-rs/toolchain@v1.0.7
+        with:
+          toolchain: stable
+          target: x86_64-pc-windows-gnu
+
+      - name: cache dependencies
+        uses: Swatinem/rust-cache@v2.9.1
+
+      - name: clippy check
+        uses: sksat/action-clippy@v1.1.1
+        with:
+          reporter: github-check
+
+      - name: install cargo-license
+        run: cargo install cargo-license
+
+      - name: unit test
+        run: |
+          cargo test --no-run --locked
+          cargo test
+
+      - name: build
+        env:
+          TARGET: ${{ matrix.target }}
+        run:
+          cargo build --release --target $TARGET
+
+      - env:
+          TARGET: ${{ matrix.target }}
+          FILE: ${{ matrix.file }}
+          OUTPUT: ${{ matrix.output }}
+        run: |
+          mkdir docx-editingtime-editor
+          cargo license \
+            --authors \
+            --do-not-bundle \
+            --avoid-dev-deps \
+            --avoid-build-deps \
+            --filter-platform $TARGET \
+              > docx-editingtime-editor/CREDITS
+          VERSION_NAME=${GITHUB_REF##*/}
+          if [[ $VERSION_NAME == "master" ]]; then
+              VERSION_NAME=$(git rev-parse --short HEAD)
+          elif [[ ${VERSION_NAME:0:1} == "v" ]]; then
+              VERSION_NAME=${VERSION_NAME:1}
+          fi
+          echo "$VERSION_NAME" > docx-editingtime-editor/VERSION.txt
+          cp LICENSE README.md docx-editingtime-editor/
+          cp target/$TARGET/release/$FILE docx-editingtime-editor/
+          zip -r $OUTPUT docx-editingtime-editor
+
+      - name: pre-release
+        uses: softprops/action-gh-release@v3.0.0
+        if: "! startsWith(github.ref, 'refs/tags/')"
+        with:
+          tag_name: nightly-${{ github.sha }}
+          prerelease: true
+          fail_on_unmatched_files: true
+          files: |
+            ${{ matrix.output }}
+
+      - name: tagged-release
+        uses: softprops/action-gh-release@v3.0.0
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          fail_on_unmatched_files: true
+          files: |
+            ${{ matrix.output }}
