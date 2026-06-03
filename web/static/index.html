@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang=ja>
+  <head>
+    <meta charset=utf-8>
+    <title>docx-editingtime-editor</title>
+    <meta name=viewport content="width=device-width, initial-scale=1.0">
+    <meta property=og:type content=website>
+    <meta property=og:title content="docx-editingtime-editor">
+    <meta property=og:description content="あなたのWord文書の総編集時間を詐称します。">
+    <meta property=og:site_name content="docx-editingtime-editor">
+    <style>
+      html, body {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        border: 0;
+      }
+      .container {
+        width: 100%;
+        max-width: 800px;
+        margin: auto;
+      }
+      input {
+        width: 100%;
+        font-size: 1.5em;
+      }
+      a:visited {
+        color: #007bff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class=container>
+      <h1>docx-editingtime-editor</h1>
+      <p>あなたの作成した資料の総編集時間を編集します。</p>
+      <p><a href=https://github.com/yanorei32/docx-editingtime-editor>GitHub</a></p>
+      <p>
+        <label for=input>docxファイル:</label>
+        <input type=file id=input accept=application/vnd.openxmlformats-officedocument.wordprocessingml.document>
+      </p>
+      <p>
+        <label for=input>総編集時間 (分):</label>
+        <input type=number id=time min=0 value=100>
+      </p>
+      <p>
+        <input type=button id=button value=適用>
+      </p>
+    </div>
+
+    <script type=module>
+      import init, * as wasm from './pkg/docx-editingtime-editor.js';
+
+      async function run() {
+        await init();
+      }
+
+      function create_filename(original_filename) {
+        const splitted = original_filename.split('.');
+        splitted[0] += '_edited';
+        return splitted.join('.');
+      }
+
+      document.getElementById('button').addEventListener('click', async () => {
+        const input = document.getElementById('input').files[0];
+        if (!input) return;
+
+        try {
+          const input_buffer = await input.arrayBuffer();
+          const input_array = new Uint8Array(input_buffer);
+
+          const time = document.getElementById('time').value;
+
+          const output_array = wasm.process(input_array, time);
+          const output_blob = new Blob([output_array], {
+            type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+          });
+
+          const output_url = window.URL.createObjectURL(output_blob);
+          const a = document.createElement('a');
+          a.href = output_url;
+          a.download = create_filename(input.name);
+          a.style.display = 'none';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(output_url);
+        } catch (error) {
+          console.error("Error reading file:", error);
+        }
+      });
+
+      run();
+    </script>
+  </body>
+</html>

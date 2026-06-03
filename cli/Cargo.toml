@@ -1,0 +1,14 @@
+[package]
+name = "cli"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+clap = { version = "4.6.0", features = ["derive"] }
+humantime = "2.3.0"
+
+core = { path = "../core/" }
+
+[[bin]]
+name = "docx-editingtime-editor"
+path = "src/main.rs"

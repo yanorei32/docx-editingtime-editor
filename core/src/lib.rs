@@ -1,29 +1,11 @@
-use clap::Parser;
-use std::fs::File;
-use std::io::{Read, Write};
-use zip::read::ZipArchive;
-use zip::write::ZipWriter;
+use std::io::{Read, Seek, Write};
+use std::time::Duration;
 
-#[derive(Parser)]
-struct Cli {
-    #[arg(long, short)]
-    input: String,
+use zip::{ZipArchive, ZipWriter};
 
-    #[arg(long, short)]
-    output: String,
-
-    #[arg(long, short)]
-    time: humantime::Duration,
-}
-
-fn main() {
-    let cli = Cli::parse();
-
-    let input = File::open(&cli.input).unwrap();
+pub fn process<W: Write + Seek, R: Read + Seek>(input: R, output: &mut W, time: Duration) {
     let mut input = ZipArchive::new(input).unwrap();
-
-    let mut output = File::create(&cli.output).unwrap();
-    let mut output = ZipWriter::new(&mut output);
+    let mut output = ZipWriter::new(output);
 
     for n in 0..input.len() {
         let mut file = input.by_index(n).unwrap();
@@ -39,7 +21,7 @@ fn main() {
             xml.root_element_mut()
                 .first_element_by_name_mut("TotalTime")
                 .unwrap()
-                .set_text((cli.time.as_secs() / 60).to_string());
+                .set_text((time.as_secs() / 60).to_string());
 
             xml.to_string().into_bytes()
         } else {
