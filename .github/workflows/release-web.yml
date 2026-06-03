@@ -30,6 +30,7 @@ jobs:
           cd web
           wasm-pack build --target web --out-name docx-editingtime-editor
           tar cvhf static.tar.gz static/
+          mv static.tar.gz ../
 
       - name: pre-release
         uses: softprops/action-gh-release@v3.0.0
