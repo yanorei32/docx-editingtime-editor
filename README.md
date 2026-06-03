@@ -14,8 +14,12 @@
 
 原作: https://x.com/PageMakerAI/status/2043838299299819561
 
+## Web版
 
-## 導入方法
+https://docx-editingtime-editor.yr32.net/ から使えます。
+<img width="1248" height="586" alt="image" src="https://github.com/user-attachments/assets/df6d510a-9fd7-4e7f-b9db-5c141d10240e" />
+
+## CLI版導入方法
 
 以下のコマンドで簡単にインストールできます。
 
@@ -23,7 +27,7 @@
 cargo install --git https://github.com/yanorei32/docx-editingtime-editor
 ```
 
-## 使い方
+## CLI版使い方
 
 入力パスと出力パスと、✨️素晴らしい総編集時間✨️を指定するだけ！
 
