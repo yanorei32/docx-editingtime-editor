@@ -35,7 +35,7 @@ jobs:
         uses: softprops/action-gh-release@v3.0.0
         if: "! startsWith(github.ref, 'refs/tags/')"
         with:
-          tag_name: master-${{ github.sha }}
+          tag_name: nightly-${{ github.sha }}
           prerelease: true
           fail_on_unmatched_files: true
           files: |

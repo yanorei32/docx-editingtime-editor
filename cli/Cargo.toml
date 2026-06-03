@@ -7,7 +7,7 @@ edition = "2024"
 clap = { version = "4.6.0", features = ["derive"] }
 humantime = "2.3.0"
 
-core = { path = "../core/" }
+editor_core = { path = "../editor_core/" }
 
 [[bin]]
 name = "docx-editingtime-editor"

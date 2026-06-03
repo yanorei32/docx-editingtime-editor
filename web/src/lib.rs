@@ -10,7 +10,7 @@ pub fn process(input: Uint8Array, minutes: u32) -> Uint8Array {
 
     let mut output_buffer = vec![];
 
-    core::process(
+    editor_core::process(
         Cursor::new(input_buffer),
         &mut Cursor::new(&mut output_buffer),
         std::time::Duration::from_mins(minutes as u64),

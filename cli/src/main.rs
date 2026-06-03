@@ -18,5 +18,5 @@ fn main() {
     let cli = Cli::parse();
     let input = File::open(&cli.input).unwrap();
     let mut output = File::create(&cli.output).unwrap();
-    core::process(input, &mut output, cli.time.into());
+    editor_core::process(input, &mut output, cli.time.into());
 }

@@ -3,6 +3,6 @@ resolver = "2"
 
 members = [
 	"cli",
-	"core",
+	"editor_core",
 	"web",
 ]
