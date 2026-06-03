@@ -17,7 +17,8 @@
 ## Web版
 
 https://docx-editingtime-editor.yr32.net/ から使えます。
-<img width="761" height="347.5" alt="image" src="https://github.com/user-attachments/assets/4c0d0d8a-9754-4c36-8e4e-a7707524a20a" />
+<img width="800" height="339" alt="image" src="https://github.com/user-attachments/assets/72b295cc-f89d-4ef7-8e12-eaf58dc56e13" />
+
 
 ## CLI版導入方法
 
