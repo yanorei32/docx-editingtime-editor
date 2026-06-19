@@ -33,7 +33,7 @@ jobs:
           mv static.tar.gz ../
 
       - name: pre-release
-        uses: softprops/action-gh-release@v3.0.0
+        uses: softprops/action-gh-release@v3.0.1
         if: "! startsWith(github.ref, 'refs/tags/')"
         with:
           tag_name: nightly-${{ github.sha }}
@@ -43,7 +43,7 @@ jobs:
             *.tar.gz
 
       - name: tagged-release
-        uses: softprops/action-gh-release@v3.0.0
+        uses: softprops/action-gh-release@v3.0.1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           fail_on_unmatched_files: true
